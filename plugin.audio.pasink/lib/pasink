@@ -298,7 +298,10 @@ function unload_combined_sink() {
 
 }
 
-# Step 0: interprete passed parameters
+# Step 0: look which bluez devices are available
+lookup_bluez_audio_candidates
+
+# Step 1: interprete passed parameters
 if [ $# -eq 0 ]
 then
   usage
@@ -340,9 +343,6 @@ while [ "$1" != "" ]; do
   esac
   shift
 done
-
-# Step 1: look which bluez devices are available
-lookup_bluez_audio_candidates
 
 # Step 2: look which bluez device is requested
 current_bluez_mac=$(get_connected_bluez)
