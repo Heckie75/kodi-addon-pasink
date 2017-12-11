@@ -159,7 +159,7 @@ def _build_menu():
                 "path" : bluez["id"],
                 "name" : "%s (%s)" % (bluez["name"], bluez["status"]) ,
                 "icon" : "icon_bluetooth",
-                "exec" : [ "set" ]
+                "action" : [ "switch" ]
             }
         ]
 
@@ -179,7 +179,7 @@ def _build_menu():
                 "path" : alsa["id"],
                 "name" : "%s (%s)" % (alsa["name"], alsa["vol"]),
                 "icon" : icon,
-                "exec" : [ "set" ]
+                "action" : [ "switch" ]
             }
         ]
 
@@ -275,10 +275,10 @@ def _add_list_item(entry, path):
         return
 
     param_string = ""
-    if "exec" in entry:
+    if "action" in entry:
         param_string = _build_param_string(
-            param = "exec",
-            values = entry["exec"],
+            param = "action",
+            values = entry["action"],
             current = param_string)
 
     if "node" in entry:
@@ -332,6 +332,9 @@ def _lookup_name_by_id(id):
 
 def execute(path, params):
 
+    if params["action"][0] != "switch":
+        return
+
     splitted_path = path.split("/")
 
     if len(splitted_path) < 2:
@@ -366,7 +369,7 @@ if __name__ == '__main__':
     url_params = urlparse.parse_qs(sys.argv[2][1:])
 
     init()
-    if "exec" in url_params:
+    if "action" in url_params:
         execute(path, url_params)
     else:
         fill_directory(path)
