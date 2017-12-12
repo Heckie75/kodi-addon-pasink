@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <category label="ALSA aliases">
+  	<setting label="ALSA Sink 1" type="lsep" />
+    <setting label="Sink" type="text" id="alsa_id_0" enable="false" default="" />
+    <setting label="Name" type="text" id="alsa_name_0" enable="false" default="" />
+    <setting label="Alias" type="text" id="alsa_alias_0" default="" />
+  	<setting label="ALSA Sink 2" type="lsep" />
+    <setting label="Sink" type="text" id="alsa_id_1" enable="false" default="" />
+    <setting label="Name" type="text" id="alsa_name_1" enable="false" default="" />
+    <setting label="Alias" type="text" id="alsa_alias_1" default="" />
+  	<setting label="ALSA Sink 3" type="lsep" />
+    <setting label="Sink" type="text" id="alsa_id_2" enable="false" default="" />
+    <setting label="Name" type="text" id="alsa_name_2" enable="false" default="" />
+    <setting label="Alias" type="text" id="alsa_alias_2" default="" />
+  	<setting label="ALSA Sink 4" type="lsep" />
+    <setting label="Sink" type="text" id="alsa_id_3" enable="false" default="" />
+    <setting label="Name" type="text" id="alsa_name_3" enable="false" default="" />
+    <setting label="Alias" type="text" id="alsa_alias_3" default="" />
+  	<setting label="ALSA Sink 5" type="lsep" />
+    <setting label="Sink" type="text" id="alsa_id_4" enable="false" default="" />
+    <setting label="Name" type="text" id="alsa_name_4" enable="false" default="" />
+    <setting label="Alias" type="text" id="alsa_alias_4" default="" />
+  </category>
+  <category label="A2DP aliases">
+  	<setting label="Bluetooth Audio 1" type="lsep" />
+  	<setting label="MAC" type="text" id="a2dp_id_0" enable="false" default="" />
+    <setting label="Name" type="text" id="a2dp_name_0" enable="false" default="" />
+    <setting label="Alias" type="text" id="a2dp_alias_0" default="" />  
+  	<setting label="Bluetooth Audio 2" type="lsep" />
+  	<setting label="MAC" type="text" id="a2dp_id_1" enable="false" default="" />
+    <setting label="Name" type="text" id="a2dp_name_1" enable="false" default="" />
+    <setting label="Alias" type="text" id="a2dp_alias_1" default="" />
+  	<setting label="Bluetooth Audio 3" type="lsep" />
+  	<setting label="MAC" type="text" id="a2dp_id_2" enable="false" default="" />
+    <setting label="Name" type="text" id="a2dp_name_2" enable="false" default="" />
+    <setting label="Alias" type="text" id="a2dp_alias_2" default="" />
+  	<setting label="Bluetooth Audio 4" type="lsep" />
+  	<setting label="MAC" type="text" id="a2dp_id_3" enable="false" default="" />
+    <setting label="Name" type="text" id="a2dp_name_3" enable="false" default="" />
+    <setting label="Alias" type="text" id="a2dp_alias_3" default="" />
+  	<setting label="Bluetooth Audio 5" type="lsep" />
+  	<setting label="MAC" type="text" id="a2dp_id_4" enable="false" default="" />
+    <setting label="Name" type="text" id="a2dp_name_4" enable="false" default="" />
+    <setting label="Alias" type="text" id="a2dp_alias_4" default="" />
+  </category>  
+</settings>  
