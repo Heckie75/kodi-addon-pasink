@@ -3,6 +3,7 @@ Created on 10.12.2017
 
 @author: heckie
 '''
+import json
 import os
 import re
 import subprocess
@@ -12,8 +13,13 @@ import urlparse
 import xbmcgui
 import xbmcplugin
 import xbmcaddon
+from _ast import alias
+from dis import dis
 
 __PLUGIN_ID__ = "plugin.audio.pasink"
+
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 settings = xbmcaddon.Addon(id=__PLUGIN_ID__);
 addon_handle = int(sys.argv[1])
@@ -26,6 +32,10 @@ alsa_sinks = []
 bluez_sinks = []
 bluez_sinked = {}
 combined_sink = {}
+aliases = {}
+
+class ContinueLoop(Exception):
+    pass
 
 
 
@@ -144,7 +154,88 @@ def _read_sinks():
 
 
 
-def _build_menu():
+def refresh_settings():
+
+    sinks = alsa_sinks + bluez_sinks
+
+    inserts = {
+        "alsa" : [],
+        "a2dp" : []
+    }
+    free_aliases = {
+        "alsa" : [],
+        "a2dp" : []
+    }
+    
+    for sink in sinks:
+        
+        bluez = "mac" in sink
+        key = "a2dp" if bluez else "alsa"
+        
+        try:
+            for i in range(5):
+
+                sid = settings.getSetting("%s_id_%i" % (key, i))
+                if sid == sink["id"]:
+                    
+                    sname = settings.getSetting("%s_name_%i" % (key, i))
+                    if sname != sink["name"]:
+                        settings.setSetting("%s_name_%i" % (key, i), sink["name"])
+    
+                    salias = settings.getSetting("%s_alias_%i" % (key, i))
+                    if salias:
+                        aliases.update({ sid : salias })
+                        if bluez:
+                            aliases.update({ 
+                                "bluez_sink." + sid.replace(":", "_") : salias
+                            })
+                            
+                    raise ContinueLoop
+                
+                elif sid == "" and i not in free_aliases[key]:
+                    free_aliases[key] += [ i ]
+                
+                    
+            inserts[key] += [ sink ]
+            
+        
+        except ContinueLoop:
+            continue
+
+
+
+
+    for key in ["alsa", "a2dp"]:
+        for sink in inserts[key]:
+            slot = None
+            if len(free_aliases[key]) > 0:
+                slot = free_aliases[key].pop(0)
+            else:
+                continue
+            
+            settings.setSetting("%s_id_%i" % (key, slot), sink["id"])
+            settings.setSetting("%s_name_%i" % (key, slot), sink["name"])
+            settings.setSetting("%s_alias_%i" % (key, slot), "")
+
+
+
+
+def get_displayname(sink=None, id=None):
+    
+    if sink == None:
+        for sink in alsa_sinks + bluez_sinks:
+            if sink["id"] == id:
+                break
+    
+    if sink["id"] in aliases:
+        return aliases[sink["id"]]
+    else:
+        return sink["name"]
+
+
+
+
+def build_dir_structure():
 
     global _menu
 
@@ -154,10 +245,11 @@ def _build_menu():
 
     for bluez in bluez_sinks:
 
+        display = get_displayname(sink=bluez)
         bluez_entries += [
             {
                 "path" : bluez["id"],
-                "name" : "%s (%s)" % (bluez["name"], bluez["status"]) ,
+                "name" : "%s (%s)" % (display, bluez["status"]) ,
                 "icon" : "icon_bluetooth",
                 "action" : [ "switch" ]
             }
@@ -174,10 +266,11 @@ def _build_menu():
         else:
             icon = "icon_analog"
 
+        display = get_displayname(sink=alsa)
         alsa_entries += [
             {
                 "path" : alsa["id"],
-                "name" : "%s (%s)" % (alsa["name"], alsa["vol"]),
+                "name" : "%s (%s)" % (display, alsa["vol"]),
                 "icon" : icon,
                 "action" : [ "switch" ]
             }
@@ -186,17 +279,17 @@ def _build_menu():
         combined_entries += [
             {
                 "path" : alsa["id"],
-                "name" : "%s ..." % alsa["name"],
+                "name" : "%s ..." % display,
                 "icon" : icon,
                 "node" : bluez_entries
             }
         ]
 
-
+    display = get_displayname(sink=default_sink)
     entries = [
         {
             "path" : "",
-            "name" : "Default: %s (%s)" % (default_sink["name"],
+            "name" : "Default: %s (%s)" % (display,
                                            default_sink["vol"]),
             "icon" : "icon_default"
         }
@@ -224,7 +317,6 @@ def _build_menu():
 def init():
 
     _read_sinks()
-    _build_menu()
 
 
 
@@ -307,25 +399,15 @@ def _add_list_item(entry, path):
 
 
 
-def fill_directory(path):
+def browse(path):
 
+    build_dir_structure()
+    
     directory = _get_directory_by_path(path)
-
     for entry in directory["node"]:
         _add_list_item(entry, path)
 
     xbmcplugin.endOfDirectory(addon_handle)
-
-
-
-
-def _lookup_name_by_id(id):
-
-    for sink in alsa_sinks + bluez_sinks:
-        if sink["id"] == id:
-            return sink["name"]
-
-    return id
 
 
 
@@ -345,11 +427,11 @@ def execute(path, params):
     if splitted_path[0] == "combined" and len(splitted_path) == 3:
         msg = "Prepare combined sink"
         splitted_path.pop(0)
-        s = _lookup_name_by_id(splitted_path[0])
-        s += "\n" + _lookup_name_by_id(splitted_path[1])
+        s = get_displayname(id=splitted_path[0])
+        s += "\n" + get_displayname(id=splitted_path[1])
     else:
         msg = "Prepare single sink ..."
-        s = _lookup_name_by_id(splitted_path[0])
+        s = get_displayname(id=splitted_path[0])
 
     xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % (msg, s, addon_dir))
@@ -369,7 +451,8 @@ if __name__ == '__main__':
     url_params = urlparse.parse_qs(sys.argv[2][1:])
 
     init()
+    refresh_settings()
     if "action" in url_params:
         execute(path, url_params)
     else:
-        fill_directory(path)
+        browse(path)
