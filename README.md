@@ -80,7 +80,7 @@ Afterwards you will see a list like this:
 
 The first entry is showing the default sink which is the sink that is active at this moment. In my case it is the "Belkin C63". In brackets you see the volume that has been set up in the pulse audio mixer, e.g. 100%. 
 
-### ALSA cards and toogling sinks
+### ALSA cards and toggling sinks
 
 Next entries are ALSA devices. In my case there is a HDMI device which is the audio output connected to my TV set. 
 
