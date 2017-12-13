@@ -29,8 +29,13 @@
 		</news>
 		<assets>
 			<icon>icon.png</icon>
-			<!-- <fanart>fanart.png</fanart> -->
-			<!-- <screenshot></screenshot> -->
+			<screenshot>resources/assets/screen_1_info.png</screenshot>
+			<screenshot>resources/assets/screen_2_hdmi.png</screenshot>
+			<screenshot>resources/assets/screen_3_usb.png</screenshot>
+			<screenshot>resources/assets/screen_4_bluez.png</screenshot>
+			<screenshot>resources/assets/screen_5_combine.png</screenshot>
+			<screenshot>resources/assets/screen_6_settings.png</screenshot>
+			<screenshot>resources/assets/screen_7_aliases.png</screenshot>
 		</assets>
 	</extension>
 </addon>
