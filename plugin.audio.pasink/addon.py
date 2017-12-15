@@ -13,8 +13,6 @@ import urlparse
 import xbmcgui
 import xbmcplugin
 import xbmcaddon
-from _ast import alias
-from dis import dis
 
 __PLUGIN_ID__ = "plugin.audio.pasink"
 
@@ -441,6 +439,10 @@ def execute(path, params):
     msg = "Sink successfully set"
     xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % (msg, s, addon_dir))
+
+
+    xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
+                        % (__PLUGIN_ID__))
 
 
 
