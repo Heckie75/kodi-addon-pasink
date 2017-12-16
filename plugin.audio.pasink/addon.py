@@ -20,7 +20,6 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 settings = xbmcaddon.Addon(id=__PLUGIN_ID__);
-addon_handle = int(sys.argv[1])
 addon_dir = xbmc.translatePath( settings.getAddonInfo('path') )
 
 _menu = []
@@ -449,12 +448,17 @@ def execute(path, params):
 
 if __name__ == '__main__':
 
-    path = urlparse.urlparse(sys.argv[0]).path
-    url_params = urlparse.parse_qs(sys.argv[2][1:])
-
     init()
     refresh_settings()
-    if "action" in url_params:
-        execute(path, url_params)
+
+    if sys.argv[1] == "discover":
+        pass
     else:
-        browse(path)
+        addon_handle = int(sys.argv[1])
+        path = urlparse.urlparse(sys.argv[0]).path
+        url_params = urlparse.parse_qs(sys.argv[2][1:])
+
+        if "action" in url_params:
+            execute(path, url_params)
+        else:
+            browse(path)
