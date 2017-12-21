@@ -12,6 +12,7 @@ function usage() {
   echo -e "  -vb, --vol-blue <0-100> <bluez_device>  set volume for bluetooth audio sink"
   echo -e "  -l,  --list                             list default, alsa, bluez and combined sinks"
   echo -e "  -ll, --list-all                         list more technical information of sinks"
+  echo -e "  -j,  --json                             simular to list-all but in json format"
   echo -e "  -d,  --disconnect                       disconnect all bluetooth devices"
   echo -e "  -p,  --pair <mac>                       pair new bluetooth a2dp device"
   echo -e "\nExamples:"
@@ -54,6 +55,46 @@ function list() {
 
   echo
 }
+
+
+
+function json() { 
+  
+  default_sink=`get_default_sink | cut -f5`
+  echo -e "{"
+  echo -e "  \"sinks\" : ["
+  list_sinks | awk -vds="${default_sink}" '\
+  BEGIN { out = "" }\
+  {\
+  split($0, s, "\t");\
+  out = out"\
+    {\n\
+      \"id\" : "s[1]",\n\
+      \"status\" : \""(s[2] == "S" ? "SUSPENDED" : "RUNNING")"\",\n\
+      \"driver\" : \""s[3]"\",\n\
+      \"name\" : \""s[4]"\",\n\
+      \"sink\" : \""s[5]"\",\n\
+      \"default\" : \""(s[5] == ds ? "true" : "false")"\",\n\
+      \"vol\" : \""s[6]"\"\n\
+    \},\n"}\
+  END { print substr(out, 0, length(out) - 2) }' 2> /dev/null
+  echo -e "  ],"
+  echo -e "  \"bluez\" : ["
+  cat /tmp/bluez_audio_devices | awk '\
+  BEGIN { out = "" }\
+  {\
+  split($0, s, "\t");\
+  out = out"\
+    {\n\
+      \"mac\" : \""s[2]"\",\n\
+      \"status\" : \""(s[1] == 0 ? "PAIRED" : "SINKED")"\",\n\
+      \"name\" : \""s[3]"\"\n\
+    \},\n"}\
+  END { print substr(out, 0, length(out) - 2) }' 2> /dev/null
+  echo -e "  ]"
+  echo -e "}"
+}
+
 
 function dump() {
 
@@ -328,6 +369,9 @@ while [ "$1" != "" ]; do
                        exit 0
                        ;;
     -ll | --list-all ) dump
+                       exit 0
+                       ;;
+    -j | --json )      json
                        exit 0
                        ;;
     -v | --vol )       shift
