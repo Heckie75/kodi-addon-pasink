@@ -11,7 +11,8 @@ function usage() {
   echo -e "  -va, --vol-alsa <0-100> <alsa_device>   set volume for alsa sink"
   echo -e "  -vb, --vol-blue <0-100> <bluez_device>  set volume for bluetooth audio sink"
   echo -e "  -l,  --list                             list default, alsa, bluez and combined sinks"
-  echo -e "  -d,  --dump                             dump more technical information of sinks"
+  echo -e "  -ll, --list-all                         list more technical information of sinks"
+  echo -e "  -d,  --disconnect                       disconnect all bluetooth devices"
   echo -e "  -p,  --pair <mac>                       pair new bluetooth a2dp device"
   echo -e "\nExamples:"
   echo -e "  pasink -va 100 -vb 80 belkin hdmi     - creates combined sink of belkin"
@@ -298,8 +299,18 @@ function unload_combined_sink() {
 
 }
 
+function disconnect() {
+
+  disconnect_bluez_by_mac $current_bluez_mac
+  unload_combined_sink
+
+}
+
 # Step 0: look which bluez devices are available
 lookup_bluez_audio_candidates
+current_bluez_mac=$(get_connected_bluez)
+current_bluez_name=$(get_bluez_name $current_bluez_mac)
+current_bluez_sink=$(make_bluez_sink_name_by_mac $current_bluez_mac)
 
 # Step 1: interprete passed parameters
 if [ $# -eq 0 ]
@@ -316,7 +327,7 @@ while [ "$1" != "" ]; do
     -l | --list )      list
                        exit 0
                        ;;
-    -d | --dump )      dump
+    -ll | --list-all ) dump
                        exit 0
                        ;;
     -v | --vol )       shift
@@ -328,6 +339,8 @@ while [ "$1" != "" ]; do
     -vb | --vol-blue )
                        shift
                        vol_bluez=$1
+                       ;;
+    -d | --disconnect ) disconnect
                        ;;
     -p | --pair )      pair
                        exit 1
@@ -345,9 +358,6 @@ while [ "$1" != "" ]; do
 done
 
 # Step 2: look which bluez device is requested
-current_bluez_mac=$(get_connected_bluez)
-current_bluez_name=$(get_bluez_name $current_bluez_mac)
-current_bluez_sink=$(make_bluez_sink_name_by_mac $current_bluez_mac)
 
 req_bluez_mac=""
 for req_device in $req1 $req2

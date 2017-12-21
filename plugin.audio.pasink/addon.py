@@ -70,7 +70,7 @@ def _read_sinks():
     _bluez_sinked = {}
     _combined_sink = {}
 
-    _pasink_out = _run_pasink(["-d"])
+    _pasink_out = _run_pasink(["--list-all"])
 
     _section = ""
     for _line in _pasink_out:
@@ -163,22 +163,22 @@ def refresh_settings():
         "alsa" : [],
         "a2dp" : []
     }
-    
+
     for sink in sinks:
-        
+
         bluez = "mac" in sink
         key = "a2dp" if bluez else "alsa"
-        
+
         try:
             for i in range(5):
 
                 sid = settings.getSetting("%s_id_%i" % (key, i))
                 if sid == sink["id"]:
-                    
+
                     sname = settings.getSetting("%s_name_%i" % (key, i))
                     if sname != sink["name"]:
                         settings.setSetting("%s_name_%i" % (key, i), sink["name"])
-    
+
                     salias = settings.getSetting("%s_alias_%i" % (key, i))
                     if salias:
                         aliases.update({ sid : salias })
@@ -186,16 +186,16 @@ def refresh_settings():
                             aliases.update({ 
                                 "bluez_sink." + sid.replace(":", "_") : salias
                             })
-                            
+
                     raise ContinueLoop
-                
+
                 elif sid == "" and i not in free_aliases[key]:
                     free_aliases[key] += [ i ]
-                
-                    
+
+
             inserts[key] += [ sink ]
-            
-        
+
+
         except ContinueLoop:
             continue
 
@@ -209,7 +209,7 @@ def refresh_settings():
                 slot = free_aliases[key].pop(0)
             else:
                 continue
-            
+
             settings.setSetting("%s_id_%i" % (key, slot), sink["id"])
             settings.setSetting("%s_name_%i" % (key, slot), sink["name"])
             settings.setSetting("%s_alias_%i" % (key, slot), "")
@@ -218,12 +218,12 @@ def refresh_settings():
 
 
 def get_displayname(sink=None, id=None):
-    
+
     if sink == None:
         for sink in alsa_sinks + bluez_sinks:
             if sink["id"] == id:
                 break
-    
+
     if sink["id"] in aliases:
         return aliases[sink["id"]]
     else:
@@ -239,6 +239,7 @@ def build_dir_structure():
     alsa_entries = []
     bluez_entries = []
     combined_entries = []
+    sinked_bluez = None
 
     for bluez in bluez_sinks:
 
@@ -249,6 +250,19 @@ def build_dir_structure():
                 "name" : "%s (%s)" % (display, bluez["status"]) ,
                 "icon" : "icon_bluetooth",
                 "action" : [ "switch" ]
+            }
+        ]
+
+        if bluez["status"] == "sinked":
+            sinked_bluez = bluez
+
+    if sinked_bluez != None:
+        bluez_entries += [
+            {
+                "path" : bluez["id"],
+                "name" : "Disconnect %s" % (display) ,
+                "icon" : "icon_disconnect",
+                "action" : [ "disconnect" ]
             }
         ]
 
@@ -399,7 +413,7 @@ def _add_list_item(entry, path):
 def browse(path):
 
     build_dir_structure()
-    
+
     directory = _get_directory_by_path(path)
     for entry in directory["node"]:
         _add_list_item(entry, path)
@@ -408,18 +422,7 @@ def browse(path):
 
 
 
-
-def execute(path, params):
-
-    if params["action"][0] != "switch":
-        return
-
-    splitted_path = path.split("/")
-
-    if len(splitted_path) < 2:
-        return
-
-    splitted_path.pop(0)
+def switch(splitted_path, path, params):
 
     if splitted_path[0] == "combined" and len(splitted_path) == 3:
         msg = "Prepare combined sink"
@@ -435,13 +438,47 @@ def execute(path, params):
 
     _run_pasink(splitted_path)
 
-    msg = "Sink successfully set"
+    msg = "Sink successfully set."
     xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % (msg, s, addon_dir))
 
 
     xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
                         % (__PLUGIN_ID__))
+
+
+
+
+def disconnect(splitted_path, path, params):
+
+    s = get_displayname(id=splitted_path[0])
+    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+                        % ("Diconnecting bluetooth device...", s, addon_dir))
+
+    _run_pasink([ "--disconnect" ])
+
+    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+                        % ("Bluetooth device disconnected.", s, addon_dir))
+
+    xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
+                        % (__PLUGIN_ID__))
+
+
+
+
+def execute(path, params):
+
+    splitted_path = path.split("/")
+    if len(splitted_path) < 2:
+        return
+
+    splitted_path.pop(0)
+
+
+    if params["action"][0] == "switch":
+        switch(splitted_path, path, params)
+    elif params["action"][0] == "disconnect":
+        disconnect(splitted_path, path, params)
 
 
 
