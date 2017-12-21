@@ -126,7 +126,8 @@ def _read_sinks():
                 "id"     : _data[0],
                 "mac"    : _data[0],
                 "status" : _data[1],
-                "name"   : _data[2]
+                "name"   : _data[2],
+                "sink"   : "bluez_sink.%s" % _data[0].replace(":", "_")
             }]
         elif _section == "combined":
             _combined_sink = {
@@ -238,33 +239,37 @@ def build_dir_structure():
 
     alsa_entries = []
     bluez_entries = []
+    bluez_combine_entries = []
     combined_entries = []
     sinked_bluez = None
 
     for bluez in bluez_sinks:
 
         display = get_displayname(sink=bluez)
-        bluez_entries += [
-            {
-                "path" : bluez["id"],
-                "name" : "%s (%s)" % (display, bluez["status"]) ,
-                "icon" : "icon_bluetooth",
-                "action" : [ "switch" ]
-            }
-        ]
+
+        _b = {
+                 "path" : bluez["id"],
+                 "name" : "%s (%s)" % (display, bluez["status"]) ,
+                 "icon" : "icon_bluetooth",
+                 "action" : [ "switch" ]
+             }
+
+        bluez_combine_entries += [ _b ]
+
+        if default_sink["sink"] != bluez["sink"]:
+            bluez_entries += [ _b ]
 
         if bluez["status"] == "sinked":
-            sinked_bluez = bluez
+            bluez_entries += [
+                {
+                    "path" : bluez["id"],
+                    "name" : "Disconnect %s (%s)" % (display, bluez["status"]),
+                    "icon" : "icon_disconnect",
+                    "action" : [ "disconnect" ]
+                }
+            ]
 
-    if sinked_bluez != None:
-        bluez_entries += [
-            {
-                "path" : bluez["id"],
-                "name" : "Disconnect %s" % (display) ,
-                "icon" : "icon_disconnect",
-                "action" : [ "disconnect" ]
-            }
-        ]
+        
 
     for alsa in alsa_sinks:
 
@@ -278,21 +283,23 @@ def build_dir_structure():
             icon = "icon_analog"
 
         display = get_displayname(sink=alsa)
-        alsa_entries += [
-            {
-                "path" : alsa["id"],
-                "name" : "%s (%s)" % (display, alsa["vol"]),
-                "icon" : icon,
-                "action" : [ "switch" ]
-            }
-        ]
+
+        if default_sink["id"] != alsa["id"]:
+            alsa_entries += [
+                {
+                    "path" : alsa["id"],
+                    "name" : "%s (%s)" % (display, alsa["vol"]),
+                    "icon" : icon,
+                    "action" : [ "switch" ]
+                }
+            ]
 
         combined_entries += [
             {
                 "path" : alsa["id"],
                 "name" : "%s ..." % display,
                 "icon" : icon,
-                "node" : bluez_entries
+                "node" : bluez_combine_entries
             }
         ]
 
