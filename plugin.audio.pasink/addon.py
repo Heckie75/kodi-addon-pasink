@@ -440,17 +440,19 @@ def switch(splitted_path, path, params):
         msg = "Prepare single sink ..."
         s = get_displayname(id=splitted_path[0])
 
-    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+
+    if "silent" not in params:
+        xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % (msg, s, addon_dir))
 
     _run_pasink(splitted_path)
 
-    msg = "Sink successfully set."
-    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+    if "silent" not in params:
+        msg = "Sink successfully set."
+        xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % (msg, s, addon_dir))
 
-
-    xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
+        xbmc.executebuiltin('Container.Update("plugin://%s","update")'
                         % (__PLUGIN_ID__))
 
 
@@ -459,15 +461,18 @@ def switch(splitted_path, path, params):
 def disconnect(splitted_path, path, params):
 
     s = get_displayname(id=splitted_path[0])
-    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+
+    if "silent" not in params:
+        xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % ("Diconnecting bluetooth device...", s, addon_dir))
 
     _run_pasink([ "--disconnect" ])
 
-    xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
+    if "silent" not in params: 
+        xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
                         % ("Bluetooth device disconnected.", s, addon_dir))
 
-    xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
+        xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
                         % (__PLUGIN_ID__))
 
 
