@@ -46,7 +46,7 @@ This module is required because it is responsible to automatically setup a new a
 
 ## Install kodi plugin / addon
 
-First of all download the plugin archive file, i.e. [plugin.audio.pasink.tgz](/plugin.audio.pasink.tgz)
+First of all download the plugin archive file, i.e. [plugin.audio.pasink.zip](/plugin.audio.pasink.zip)
 
 You must extract this archive in the Kodi plugin folder
 ```
@@ -54,7 +54,7 @@ You must extract this archive in the Kodi plugin folder
 $ cd ~/.kodi/addons/
 
 ### extract plugin
-$ tar xzf ~/Downloads/plugin.audio.pasink.tgz
+$ tar xzf ~/Downloads/plugin.audio.pasink.zip
 ```
 
 After you have restarted Kodi you must activate the plugin explicitly. 
