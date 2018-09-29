@@ -278,7 +278,7 @@ def build_dir_structure():
 
             bluez_combine_entries += [ _b ]
 
-            if "sink" in default_sink && default_sink["sink"] != bluez["sink"]:
+            if "sink" in default_sink and default_sink["sink"] != bluez["sink"]:
                 bluez_entries += [ _b ]
 
             if bluez["status"] == "sinked":
@@ -308,7 +308,8 @@ def build_dir_structure():
         hidden = is_hidden(sink=alsa)
 
         if not hidden:
-            if "id" in default_sink && default_sink["id"] != alsa["id"]:
+            if "id" in default_sink and default_sink["id"] != alsa["id"]:
+
                 alsa_entries += [
                     {
                         "path" : alsa["id"],
