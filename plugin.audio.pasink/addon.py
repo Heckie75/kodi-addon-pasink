@@ -189,7 +189,7 @@ def refresh_settings():
                         }
                     })
                     if bluez:
-                        aliases.update({ 
+                        aliases.update({
                             "bluez_sink." + sid.replace(":", "_") : {
                                 "name" : salias if salias else sname,
                                 "hidden" : hide
@@ -268,7 +268,7 @@ def build_dir_structure():
         displayname = get_displayname(sink=bluez)
         hidden = is_hidden(sink=bluez)
 
-	if not hidden: 
+        if not hidden:
             _b = {
                      "path" : bluez["id"],
                      "name" : "%s (%s)" % (displayname, bluez["status"]) ,
@@ -278,7 +278,7 @@ def build_dir_structure():
 
             bluez_combine_entries += [ _b ]
 
-            if default_sink["sink"] != bluez["sink"]:
+            if "sink" in default_sink && default_sink["sink"] != bluez["sink"]:
                 bluez_entries += [ _b ]
 
             if bluez["status"] == "sinked":
@@ -291,7 +291,7 @@ def build_dir_structure():
                     }
                 ]
 
-        
+
 
     for alsa in alsa_sinks:
 
@@ -308,7 +308,7 @@ def build_dir_structure():
         hidden = is_hidden(sink=alsa)
 
         if not hidden:
-            if default_sink["id"] != alsa["id"]:
+            if "id" in default_sink && default_sink["id"] != alsa["id"]:
                 alsa_entries += [
                     {
                         "path" : alsa["id"],
