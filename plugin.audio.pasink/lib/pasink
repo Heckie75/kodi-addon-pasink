@@ -58,8 +58,8 @@ function list() {
 
 
 
-function json() { 
-  
+function json() {
+
   default_sink=`get_default_sink | cut -f5`
   echo -e "{"
   echo -e "  \"sinks\" : ["
@@ -343,6 +343,9 @@ function unload_combined_sink() {
 function disconnect() {
 
   disconnect_bluez_by_mac $current_bluez_mac
+  current_bluez_mac=""
+  current_bluez_name=""
+  current_bluez_sink=""
   unload_combined_sink
 
 }
