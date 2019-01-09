@@ -1,6 +1,9 @@
 #!/bin/bash
 MAX_RETRIES=5
 
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
+
 function usage() {
   echo -e "\nPulse-audio sink-setter with bluez and combined-sink support"
   echo -e "\nUsage:"
