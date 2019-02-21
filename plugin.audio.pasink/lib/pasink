@@ -226,7 +226,7 @@ function get_connected_bluez() {
 function make_bluez_sink_name_by_mac() {
 
   _mac=$1
-  echo bluez_sink.$_mac | sed "s/:/_/g"
+  echo bluez_sink.$_mac.a2dp_sink | sed "s/:/_/g"
 
 }
 
@@ -440,7 +440,6 @@ then
   exit 1
 fi
 
-
 # Step 5: If bluez device is requested that is different from current, then connect new bluez device
 if [ "$req_bluez_mac" != "" ] && [ "$req_bluez_mac" != "$current_bluez_mac" ]
 then
@@ -448,6 +447,7 @@ then
   while [ $retry2 -lt $MAX_RETRIES ]
   do
     disconnect_bluez_by_mac $current_bluez_mac
+
     connect_bluez_by_mac $req_bluez_mac
     current_bluez_mac=$req_bluez_mac
     wait_for_sink_available $req_bluez_sink
