@@ -127,7 +127,7 @@ def _read_sinks():
                 "mac"    : _data[0],
                 "status" : _data[1],
                 "name"   : _data[2],
-                "sink"   : "bluez_sink.%s" % _data[0].replace(":", "_")
+                "sink"   : "bluez_sink.%s.a2dp_sink" % _data[0].replace(":", "_")
             }]
         elif _section == "combined":
             _combined_sink = {
@@ -190,7 +190,7 @@ def refresh_settings():
                     })
                     if bluez:
                         aliases.update({
-                            "bluez_sink." + sid.replace(":", "_") : {
+                            "bluez_sink." + sid.replace(":", "_") + ".a2dp_sink": {
                                 "name" : salias if salias else sname,
                                 "hidden" : hide
                             }
