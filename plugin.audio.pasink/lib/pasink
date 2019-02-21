@@ -135,7 +135,7 @@ function pair() {
 
 function lookup_bluez_audio_candidates() {
 
-  echo -e "\nquit" | bluetoothctl | awk '/Device/ {match($0, "Device ([0-9A-Z:]+) (.*)$", s); print s[1];}' | while read device
+  echo -e "\ndevices\nquit" | bluetoothctl | awk '/Device/ {match($0, "Device ([0-9A-Z:]+) (.*)$", s); print s[1];}' | while read device
   do
     echo -e "info $device\nquit" | bluetoothctl | \
     awk 'BEGIN {mac="";name=""; audio=0; connected=0;} \
