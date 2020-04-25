@@ -39,8 +39,8 @@ function list() {
   echo -e "\nPaired Bluetooth A2DP devices:"
   cat /tmp/bluez_audio_devices | awk '{ \
     split($0, s, "\t"); \
-    status=($1==1 ? "sinked" : "paired"); \
-    print "\t"s[3]; \
+    status=(s[2] == 1 ? "sinked" : "paired"); \
+    print status"\t"s[4]; \
   }'
 
   pactl list sinks short | grep 'module-combine-sink' > /dev/null
@@ -89,9 +89,10 @@ function json() {
   split($0, s, "\t");\
   out = out"\
     {\n\
-      \"mac\" : \""s[2]"\",\n\
-      \"status\" : \""(s[1] == 0 ? "PAIRED" : "SINKED")"\",\n\
-      \"name\" : \""s[3]"\"\n\
+      \"controller\" : \""s[1]"\",\n\
+      \"mac\" : \""s[3]"\",\n\
+      \"status\" : \""(s[2] == 0 ? "PAIRED" : "SINKED")"\",\n\
+      \"name\" : \""s[4]"\"\n\
     \},\n"}\
   END { print substr(out, 0, length(out) - 2) }' 2> /dev/null
   echo -e "  ]"
@@ -120,8 +121,8 @@ function dump() {
   echo -e "\nPaired Bluetooth A2DP devices:"
   cat /tmp/bluez_audio_devices | awk '{ \
     split($0, s, "\t"); \
-    status=($1==1 ? "sinked" : "paired"); \
-    print s[2]"\t"status"\t"s[3]; \
+    status=(s[2]==1 ? "sinked" : "paired"); \
+    print s[3]"\t"status"\t"s[4]; \
   }'
 
   echo
@@ -135,21 +136,30 @@ function pair() {
 
 function lookup_bluez_audio_candidates() {
 
-  echo -e "\ndevices\nquit" | bluetoothctl | awk '/Device/ {match($0, "Device ([0-9A-Z:]+) (.*)$", s); print s[1];}' | while read device
+  if [ -e /tmp/bluez_audio_devices ]
+  then
+    rm -f /tmp/bluez_audio_devices
+  fi
+
+  for controller in $(bluetoothctl list | egrep -o [0-9A-F:]{17})
   do
-    echo -e "info $device\nquit" | bluetoothctl | \
-    awk 'BEGIN {mac="";name=""; audio=0; connected=0;} \
-         /^Device/ {match($0, "Device ([A-F0-9:]+)", s); mac=s[1];} \
-         /Name: / {match($0, "Name: (.*)$",s); name=s[1];} \
-         /UUID: Audio Sink/ {audio=1;} /Connected: yes/ {connected=1;} \
-         END {if (audio==1) print connected"\t"mac"\t"name;}';
-  done > /tmp/bluez_audio_devices
+    echo -e "select $controller\ndevices\nquit" | bluetoothctl | awk '/Device/ {match($0, "Device ([0-9A-Z:]+) (.*)$", s); print s[1];}' | while read device
+    do
+      echo -e "select $controller\ninfo $device\nquit" | bluetoothctl | \
+      awk -v controller=$controller 'BEGIN {mac="";name=""; audio=0; connected=0;} \
+          /^Device/ {match($0, "Device ([A-F0-9:]+)", s); mac=s[1];} \
+          /Name: / {match($0, "Name: (.*)$",s); name=s[1];} \
+          /UUID: Audio Sink/ {audio=1;} /Connected: yes/ {connected=1;} \
+          END {if (audio==1) print controller"\t"connected"\t"mac"\t"name;}';
+    done >> /tmp/bluez_audio_devices
+  done
 
 }
 
 function disconnect_bluez_by_mac() {
 
-  _mac=$1
+  _controller=$1
+  _mac=$2
 
   if [ "$_mac" == "" ]
   then
@@ -161,7 +171,9 @@ function disconnect_bluez_by_mac() {
     log_user 0
     spawn -noecho bluetoothctl
     expect "#"
-    send "disconnect $1\n"
+    send "select $1\n"
+    expect "#"
+    send "disconnect $2\n"
     expect {
       "Successful disconnected" {
         puts "\\t\\t\\[OK\\]"
@@ -177,7 +189,8 @@ EOD
 
 function connect_bluez_by_mac() {
 
-  _mac=$1
+  _controller=$1
+  _mac=$2
 
   if [ "$_mac" == "" ]
   then
@@ -189,7 +202,9 @@ function connect_bluez_by_mac() {
     log_user 0
     spawn -noecho bluetoothctl
     expect "#"
-    send "connect $1\n"
+    send "select $1\n"
+    expect "#"    
+    send "connect $2\n"
     expect {
       "Connection successful" {
         puts "\\t\\t\\[OK\\]"
@@ -203,23 +218,36 @@ EOD
 
 }
 
+function get_bluez_controller() {
+
+  _name=$1
+  awk -vreqsink=$_name 'BEGIN{IGNORECASE=1} match($0, reqsink) {match($0, "^([0-9A-Z:]+)\t[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[1];}' /tmp/bluez_audio_devices
+
+}
+
 function get_bluez_mac() {
 
   _name=$1
-  awk -vreqsink=$_name 'BEGIN{IGNORECASE=1} match($0, reqsink) {match($0, "[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[1];}' /tmp/bluez_audio_devices
+  awk -vreqsink=$_name 'BEGIN{IGNORECASE=1} match($0, reqsink) {match($0, "^([0-9A-Z:]+)\t[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[2];}' /tmp/bluez_audio_devices
 
 }
 
 function get_bluez_name() {
 
   _name=$1
-  awk -vreqsink=$_name 'BEGIN{IGNORECASE=1} match($0, reqsink) {match($0, "[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[2];}' /tmp/bluez_audio_devices
+  awk -vreqsink=$_name 'BEGIN{IGNORECASE=1} match($0, reqsink) {match($0, "^([0-9A-Z:]+)\t[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[3];}' /tmp/bluez_audio_devices
 
 }
 
-function get_connected_bluez() {
+function get_connected_mac() {
 
-  awk 'match($0, "^1") {match($0, "[01]\t([0-9A-Z:]+)\t(.*)$", s); print s[1];}' /tmp/bluez_audio_devices
+  awk '/\t1\t/ {match($0, "^([0-9A-Z:]+)\t1\t([0-9A-Z:]+)\t(.*)$", s); print s[2];}' /tmp/bluez_audio_devices
+
+}
+
+function get_connected_controller() {
+
+  awk '/\t1\t/ {match($0, "^([0-9A-Z:]+)\t1\t([0-9A-Z:]+)\t(.*)$", s); print s[1];}' /tmp/bluez_audio_devices
 
 }
 
@@ -345,7 +373,7 @@ function unload_combined_sink() {
 
 function disconnect() {
 
-  disconnect_bluez_by_mac $current_bluez_mac
+  disconnect_bluez_by_mac $1 $2
   current_bluez_mac=""
   current_bluez_name=""
   current_bluez_sink=""
@@ -355,7 +383,8 @@ function disconnect() {
 
 # Step 0: look which bluez devices are available
 lookup_bluez_audio_candidates
-current_bluez_mac=$(get_connected_bluez)
+current_bluez_controller=$(get_connected_controller)
+current_bluez_mac=$(get_connected_mac)
 current_bluez_name=$(get_bluez_name $current_bluez_mac)
 current_bluez_sink=$(make_bluez_sink_name_by_mac $current_bluez_mac)
 
@@ -390,7 +419,7 @@ while [ "$1" != "" ]; do
                        shift
                        vol_bluez=$1
                        ;;
-    -d | --disconnect ) disconnect
+    -d | --disconnect ) disconnect $current_bluez_controller $current_bluez_mac
                        ;;
     -p | --pair )      pair
                        exit 1
@@ -412,6 +441,7 @@ done
 req_bluez_mac=""
 for req_device in $req1 $req2
 do
+  req_bluez_controller=$(get_bluez_controller $req_device)
   req_bluez_mac=$(get_bluez_mac $req_device)
   req_bluez_name=$(get_bluez_name $req_device)
   req_bluez_sink=$(make_bluez_sink_name_by_mac $req_bluez_mac)
@@ -446,9 +476,10 @@ then
   retry2=0
   while [ $retry2 -lt $MAX_RETRIES ]
   do
-    disconnect_bluez_by_mac $current_bluez_mac
+    disconnect_bluez_by_mac $current_bluez_controller $current_bluez_mac
 
-    connect_bluez_by_mac $req_bluez_mac
+    connect_bluez_by_mac $req_bluez_controller $req_bluez_mac
+    current_bluez_controller=$req_bluez_controller
     current_bluez_mac=$req_bluez_mac
     wait_for_sink_available $req_bluez_sink
     if [ $? == 0 ]
