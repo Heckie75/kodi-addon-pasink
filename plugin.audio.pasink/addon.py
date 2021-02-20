@@ -1,26 +1,23 @@
-'''
-Created on 10.12.2017
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
-@author: heckie
-'''
 import json
 import os
 import re
 import subprocess
 import sys
-import urlparse
+import urllib.parse
 
 import xbmcgui
 import xbmcplugin
+import xbmc
 import xbmcaddon
+import xbmcvfs
 
 __PLUGIN_ID__ = "plugin.audio.pasink"
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
-settings = xbmcaddon.Addon(id=__PLUGIN_ID__);
-addon_dir = xbmc.translatePath( settings.getAddonInfo('path') )
+settings = xbmcaddon.Addon(id=__PLUGIN_ID__)
+addon_dir = xbmcvfs.translatePath(settings.getAddonInfo('path'))
 
 _menu = []
 
@@ -31,19 +28,17 @@ bluez_sinked = {}
 combined_sink = {}
 aliases = {}
 
+
 class ContinueLoop(Exception):
     pass
-
-
 
 
 def _run_pasink(params):
 
     call = [addon_dir + os.sep
-                          + "lib"
-                          + os.sep
-                          + "pasink"] + params
-
+            + "lib"
+            + os.sep
+            + "pasink"] + params
 
     p = subprocess.Popen(call,
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -52,8 +47,6 @@ def _run_pasink(params):
     value_string = out.decode("utf-8")
 
     return value_string.split("\n")
-
-
 
 
 def _read_sinks():
@@ -96,48 +89,48 @@ def _read_sinks():
 
         if _section == "default":
             _default_sink = {
-                "id"     : _data[4],
-                "status" : _data[1],
-                "driver" : _data[2],
-                "name"   : _data[3],
-                "sink"   : _data[4],
-                "vol"    : _data[5]
-                }
+                "id": _data[4],
+                "status": _data[1],
+                "driver": _data[2],
+                "name": _data[3],
+                "sink": _data[4],
+                "vol": _data[5]
+            }
         elif _section == "alsa":
             _alsa_sinks += [{
-                "id"     : _data[4],
-                "status" : _data[1],
-                "driver" : _data[2],
-                "name"   : _data[3],
-                "sink"   : _data[4],
-                "vol"    : _data[5]
+                "id": _data[4],
+                "status": _data[1],
+                "driver": _data[2],
+                "name": _data[3],
+                "sink": _data[4],
+                "vol": _data[5]
             }]
         elif _section == "sinked":
             _bluez_sinked = {
-                "id"     : _data[4],
-                "status" : _data[1],
-                "driver" : _data[2],
-                "name"   : _data[3],
-                "sink"   : _data[4],
-                "vol"    : _data[5]
-                }
+                "id": _data[4],
+                "status": _data[1],
+                "driver": _data[2],
+                "name": _data[3],
+                "sink": _data[4],
+                "vol": _data[5]
+            }
         elif _section == "paired":
             _bluez_sinks += [{
-                "id"     : _data[0],
-                "mac"    : _data[0],
-                "status" : _data[1],
-                "name"   : _data[2],
-                "sink"   : "bluez_sink.%s.a2dp_sink" % _data[0].replace(":", "_")
+                "id": _data[0],
+                "mac": _data[0],
+                "status": _data[1],
+                "name": _data[2],
+                "sink": "bluez_sink.%s.a2dp_sink" % _data[0].replace(":", "_")
             }]
         elif _section == "combined":
             _combined_sink = {
-                "id"     : _data[4],
-                "status" : _data[1],
-                "driver" : _data[2],
-                "name"   : _data[3],
-                "sink"   : _data[4],
-                "vol"    : _data[5]
-                }
+                "id": _data[4],
+                "status": _data[1],
+                "driver": _data[2],
+                "name": _data[3],
+                "sink": _data[4],
+                "vol": _data[5]
+            }
         else:
             pass
 
@@ -150,19 +143,17 @@ def _read_sinks():
     return _default_sink, _alsa_sinks, _bluez_sinks, _bluez_sinked, _combined_sink
 
 
-
-
 def refresh_settings():
 
     sinks = alsa_sinks + bluez_sinks
 
     inserts = {
-        "alsa" : [],
-        "a2dp" : []
+        "alsa": [],
+        "a2dp": []
     }
     free_aliases = {
-        "alsa" : [],
-        "a2dp" : []
+        "alsa": [],
+        "a2dp": []
     }
 
     for sink in sinks:
@@ -178,38 +169,34 @@ def refresh_settings():
 
                     sname = settings.getSetting("%s_name_%i" % (key, i))
                     if sname != sink["name"]:
-                        settings.setSetting("%s_name_%i" % (key, i), sink["name"])
+                        settings.setSetting("%s_name_%i" %
+                                            (key, i), sink["name"])
 
                     salias = settings.getSetting("%s_alias_%i" % (key, i))
                     hide = settings.getSetting("%s_hide_%i" % (key, i))
 
-                    aliases.update({ sid : {
-                            "name" : salias if salias else sname,
-                            "hidden" : hide
-                        }
+                    aliases.update({sid: {
+                        "name": salias if salias else sname,
+                        "hidden": hide
+                    }
                     })
                     if bluez:
                         aliases.update({
                             "bluez_sink." + sid.replace(":", "_") + ".a2dp_sink": {
-                                "name" : salias if salias else sname,
-                                "hidden" : hide
+                                "name": salias if salias else sname,
+                                "hidden": hide
                             }
                         })
 
                     raise ContinueLoop
 
                 elif sid == "" and i not in free_aliases[key]:
-                    free_aliases[key] += [ i ]
+                    free_aliases[key] += [i]
 
-
-            inserts[key] += [ sink ]
-
+            inserts[key] += [sink]
 
         except ContinueLoop:
             continue
-
-
-
 
     for key in ["alsa", "a2dp"]:
         for sink in inserts[key]:
@@ -222,8 +209,6 @@ def refresh_settings():
             settings.setSetting("%s_id_%i" % (key, slot), sink["id"])
             settings.setSetting("%s_name_%i" % (key, slot), sink["name"])
             settings.setSetting("%s_alias_%i" % (key, slot), "")
-
-
 
 
 def get_displayname(sink=None, id=None):
@@ -239,8 +224,6 @@ def get_displayname(sink=None, id=None):
         return sink["name"]
 
 
-
-
 def is_hidden(sink=None, id=None):
 
     if sink == None:
@@ -251,8 +234,6 @@ def is_hidden(sink=None, id=None):
     return (sink["id"] in aliases) and (aliases[sink["id"]]["hidden"] == "true")
 
 
-
-
 def build_dir_structure():
 
     global _menu
@@ -261,7 +242,6 @@ def build_dir_structure():
     bluez_entries = []
     bluez_combine_entries = []
     combined_entries = []
-    sinked_bluez = None
 
     for bluez in bluez_sinks:
 
@@ -270,28 +250,26 @@ def build_dir_structure():
 
         if not hidden:
             _b = {
-                     "path" : bluez["id"],
-                     "name" : "%s (%s)" % (displayname, bluez["status"]) ,
-                     "icon" : "icon_bluetooth",
-                     "action" : [ "switch" ]
-                 }
+                "path": bluez["id"],
+                "name": "%s (%s)" % (displayname, bluez["status"]),
+                "icon": "icon_bluetooth",
+                "action": ["switch"]
+            }
 
-            bluez_combine_entries += [ _b ]
+            bluez_combine_entries += [_b]
 
             if "sink" in default_sink and default_sink["sink"] != bluez["sink"]:
-                bluez_entries += [ _b ]
+                bluez_entries += [_b]
 
             if bluez["status"] == "sinked":
                 bluez_entries += [
                     {
-                        "path" : bluez["id"],
-                        "name" : "Disconnect %s (%s)" % (displayname, bluez["status"]),
-                        "icon" : "icon_disconnect",
-                        "action" : [ "disconnect" ]
+                        "path": bluez["id"],
+                        "name": "Disconnect %s (%s)" % (displayname, bluez["status"]),
+                        "icon": "icon_disconnect",
+                        "action": ["disconnect"]
                     }
                 ]
-
-
 
     for alsa in alsa_sinks:
 
@@ -312,56 +290,52 @@ def build_dir_structure():
 
                 alsa_entries += [
                     {
-                        "path" : alsa["id"],
-                        "name" : "%s (%s)" % (displayname, alsa["vol"]),
-                        "icon" : icon,
-                        "action" : [ "switch" ]
+                        "path": alsa["id"],
+                        "name": "%s (%s)" % (displayname, alsa["vol"]),
+                        "icon": icon,
+                        "action": ["switch"]
                     }
                 ]
 
             combined_entries += [
                 {
-                    "path" : alsa["id"],
-                    "name" : "%s ..." % displayname,
-                    "icon" : icon,
-                    "node" : bluez_combine_entries
+                    "path": alsa["id"],
+                    "name": "%s ..." % displayname,
+                    "icon": icon,
+                    "node": bluez_combine_entries
                 }
             ]
 
     displayname = get_displayname(sink=default_sink)
     entries = [
         {
-            "path" : "",
-            "name" : "Default: %s (%s)" % (displayname,
-                                           default_sink["vol"]),
-            "icon" : "icon_default"
+            "path": "",
+            "name": "Default: %s (%s)" % (displayname,
+                                          default_sink["vol"]),
+            "icon": "icon_default"
         }
     ]
     entries += alsa_entries + bluez_entries
     entries += [
-            {
-                "path" : "combined",
-                "name" : "combine sinks ...",
-                "icon" : "icon_combine",
-                "node" : combined_entries
-            }
-        ]
-
-    _menu = [
-        { # root
-        "path" : "",
-        "node" : entries
+        {
+            "path": "combined",
+            "name": "combine sinks ...",
+            "icon": "icon_combine",
+            "node": combined_entries
         }
     ]
 
-
+    _menu = [
+        {  # root
+            "path": "",
+            "node": entries
+        }
+    ]
 
 
 def init():
 
     _read_sinks()
-
-
 
 
 def _get_directory_by_path(path):
@@ -382,9 +356,7 @@ def _get_directory_by_path(path):
     return directory
 
 
-
-
-def _build_param_string(param, values, current = ""):
+def _build_param_string(param, values, current=""):
 
     if values == None:
         return current
@@ -394,8 +366,6 @@ def _build_param_string(param, values, current = ""):
         current += param + "=" + v
 
     return current
-
-
 
 
 def _add_list_item(entry, path):
@@ -412,9 +382,9 @@ def _add_list_item(entry, path):
     param_string = ""
     if "action" in entry:
         param_string = _build_param_string(
-            param = "action",
-            values = entry["action"],
-            current = param_string)
+            param="action",
+            values=entry["action"],
+            current=param_string)
 
     if "node" in entry:
         is_folder = True
@@ -426,20 +396,20 @@ def _add_list_item(entry, path):
         label = settings.getSetting("label%s" % item_id)
 
     if "icon" in entry:
-        icon_file = os.path.join(addon_dir, "resources", "assets", entry["icon"] + ".png")
+        icon_file = os.path.join(
+            addon_dir, "resources", "assets", entry["icon"] + ".png")
     else:
         icon_file = None
 
-    li = xbmcgui.ListItem(label, iconImage=icon_file)
+    li = xbmcgui.ListItem(label)
+    li.setArt({"icon": icon_file})
 
     xbmcplugin.addDirectoryItem(handle=addon_handle,
-                            listitem=li,
-                            url="plugin://" + __PLUGIN_ID__
-                            + item_path
-                            + param_string,
-                            isFolder=is_folder)
-
-
+                                listitem=li,
+                                url="plugin://" + __PLUGIN_ID__
+                                + item_path
+                                + param_string,
+                                isFolder=is_folder)
 
 
 def browse(path):
@@ -453,7 +423,6 @@ def browse(path):
     xbmcplugin.endOfDirectory(addon_handle)
 
 
-
 def switch(splitted_path, path, params):
 
     if splitted_path[0] == "combined" and len(splitted_path) == 3:
@@ -465,22 +434,19 @@ def switch(splitted_path, path, params):
         msg = "Prepare single sink ..."
         s = get_displayname(id=splitted_path[0])
 
-
     if "silent" not in params:
         xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
-                        % (msg, s, addon_dir))
+                            % (msg, s, addon_dir))
 
     _run_pasink(splitted_path)
 
     if "silent" not in params:
         msg = "Sink successfully set."
         xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
-                        % (msg, s, addon_dir))
+                            % (msg, s, addon_dir))
 
         xbmc.executebuiltin('Container.Update("plugin://%s","update")'
-                        % (__PLUGIN_ID__))
-
-
+                            % (__PLUGIN_ID__))
 
 
 def disconnect(splitted_path, path, params):
@@ -489,18 +455,16 @@ def disconnect(splitted_path, path, params):
 
     if "silent" not in params:
         xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
-                        % ("Diconnecting bluetooth device...", s, addon_dir))
+                            % ("Diconnecting bluetooth device...", s, addon_dir))
 
-    _run_pasink([ "--disconnect" ])
+    _run_pasink(["--disconnect"])
 
-    if "silent" not in params: 
+    if "silent" not in params:
         xbmc.executebuiltin("Notification(%s, %s, %s/icon.png)"
-                        % ("Bluetooth device disconnected.", s, addon_dir))
+                            % ("Bluetooth device disconnected.", s, addon_dir))
 
-        xbmc.executebuiltin('Container.Update("plugin://%s","update")' 
-                        % (__PLUGIN_ID__))
-
-
+        xbmc.executebuiltin('Container.Update("plugin://%s","update")'
+                            % (__PLUGIN_ID__))
 
 
 def execute(path, params):
@@ -511,13 +475,10 @@ def execute(path, params):
 
     splitted_path.pop(0)
 
-
     if params["action"][0] == "switch":
         switch(splitted_path, path, params)
     elif params["action"][0] == "disconnect":
         disconnect(splitted_path, path, params)
-
-
 
 
 if __name__ == '__main__':
@@ -529,8 +490,8 @@ if __name__ == '__main__':
         pass
     else:
         addon_handle = int(sys.argv[1])
-        path = urlparse.urlparse(sys.argv[0]).path
-        url_params = urlparse.parse_qs(sys.argv[2][1:])
+        path = urllib.parse.urlparse(sys.argv[0]).path
+        url_params = urllib.parse.parse_qs(sys.argv[2][1:])
 
         if "action" in url_params:
             execute(path, url_params)
