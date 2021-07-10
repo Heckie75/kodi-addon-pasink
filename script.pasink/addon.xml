@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.0.1" provider-name="Heckie">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0" />
+	</requires>
+	<extension point="xbmc.python.script" library="addon.py" />
+	<extension point="kodi.context.item">
+		<menu id="kodi.core.main">
+			<item library="addon.py">
+				<label>32002</label>
+				<visible>true</visible>
+			</item>
+		</menu>
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Pulse-audio sink-setter with bluez and combined-sink support</summary>
+		<description lang="en_GB">Pulse-audio sink-setter with bluez and combined-sink support</description>
+		<disclaimer lang="en_GB"></disclaimer>
+		<language>en_GB</language>
+		<platform>linux</platform>
+		<license>MIT</license>
+		<website>https://github.com/Heckie75/kodi-addon-pasink</website>
+		<source>https://github.com/Heckie75/kodi-addon-pasink</source>
+		<news>
+		v2.0.1 (2020-07-10)
+		- Changed type of addon from audui addon to script / program
+		v2.0.0 (2020-02-20)
+		- Migration to Kodi v19 alias Matrix
+		</news>
+		<assets>
+			<icon>icon.png</icon>
+			<screenshot>resources/assets/screenshot_01.png</screenshot>
+			<screenshot>resources/assets/screenshot_02.png</screenshot>
+			<screenshot>resources/assets/screenshot_03.png</screenshot>
+			<screenshot>resources/assets/screenshot_04.png</screenshot>
+			<screenshot>resources/assets/screenshot_05.png</screenshot>
+			<screenshot>resources/assets/screenshot_06.png</screenshot>
+			<screenshot>resources/assets/screenshot_07.png</screenshot>
+		</assets>
+	</extension>
+</addon>

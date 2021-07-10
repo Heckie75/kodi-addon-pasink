@@ -1,0 +1,157 @@
+# Kodi Media Center language file
+# Addon Name: Skin Widgets
+# Addon id: service.skin.widgets
+# Addon Provider: Martijn, phil65
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: alanwww1@kodi.org\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Kodi Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/xbmc-addons/language/en/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32001"
+msgid "Audio sink setter"
+msgstr ""
+
+msgctxt "#32002"
+msgid "Select audio sink"
+msgstr ""
+
+msgctxt "#32003"
+msgid "Set audio sink"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Set %s as new audio sink?"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Set or combine audio sink"
+msgstr ""
+
+msgctxt "#32006"
+msgid "Combine"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Select audio sink to combine"
+msgstr ""
+
+msgctxt "#32008"
+msgid "Audio sink set"
+msgstr ""
+
+msgctxt "#32009"
+msgid "New audio sink is %s"
+msgstr ""
+
+msgctxt "#32010"
+msgid "New audio sink is combined of %s and %s"
+msgstr ""
+
+msgctxt "#32011"
+msgid "ALSA Outputs"
+msgstr ""
+
+msgctxt "#32012"
+msgid "Discover devices"
+msgstr ""
+
+msgctxt "#32013"
+msgid "No devices here. Run discover first!"
+msgstr ""
+
+msgctxt "#32014"
+msgid "Start discovery"
+msgstr ""
+
+msgctxt "#32015"
+msgid "Sink"
+msgstr ""
+
+msgctxt "#32016"
+msgid "Name"
+msgstr ""
+
+msgctxt "#32017"
+msgid "Alias"
+msgstr ""
+
+msgctxt "#32018"
+msgid "Hide sink"
+msgstr ""
+
+msgctxt "#32019"
+msgid "Bluetooth outputs"
+msgstr ""
+
+msgctxt "#32021"
+msgid "ALSA output 1"
+msgstr ""
+
+msgctxt "#32022"
+msgid "ALSA output 2"
+msgstr ""
+
+msgctxt "#32023"
+msgid "ALSA output 3"
+msgstr ""
+
+msgctxt "#32024"
+msgid "ALSA output 4"
+msgstr ""
+
+msgctxt "#32025"
+msgid "ALSA output 5"
+msgstr ""
+
+msgctxt "#32031"
+msgid "Bluetooth output 1"
+msgstr ""
+
+msgctxt "#32032"
+msgid "Bluetooth output 2"
+msgstr ""
+
+msgctxt "#32033"
+msgid "Bluetooth output 3"
+msgstr ""
+
+msgctxt "#32034"
+msgid "Bluetooth output 4"
+msgstr ""
+
+msgctxt "#32035"
+msgid "Bluetooth output 5"
+msgstr ""
+
+msgctxt "#32041"
+msgid "Audio sink failed"
+msgstr ""
+
+msgctxt "#32042"
+msgid "Failed to set audio sink %s"
+msgstr ""
+
+msgctxt "#32043"
+msgid "Failed to set combined audio sink with %s and %s"
+msgstr ""
+
+msgctxt "#32044"
+msgid "%s (connected)"
+msgstr ""
+
+msgctxt "#32045"
+msgid "Disconnect %s"
+msgstr ""
+
+msgctxt "#32046"
+msgid "%s disconnected"
+msgstr ""
