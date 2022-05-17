@@ -92,6 +92,10 @@ msgctxt "#32019"
 msgid "Bluetooth outputs"
 msgstr ""
 
+msgctxt "#32020"
+msgid "Add to favourites"
+msgstr ""
+
 msgctxt "#32021"
 msgid "ALSA output 1"
 msgstr ""
@@ -112,6 +116,26 @@ msgctxt "#32025"
 msgid "ALSA output 5"
 msgstr ""
 
+msgctxt "#32026"
+msgid "ALSA output 6"
+msgstr ""
+
+msgctxt "#32027"
+msgid "ALSA output 7"
+msgstr ""
+
+msgctxt "#32028"
+msgid "ALSA output 8"
+msgstr ""
+
+msgctxt "#32029"
+msgid "ALSA output 9"
+msgstr ""
+
+msgctxt "#32030"
+msgid "ALSA output 10"
+msgstr ""
+
 msgctxt "#32031"
 msgid "Bluetooth output 1"
 msgstr ""
@@ -130,6 +154,26 @@ msgstr ""
 
 msgctxt "#32035"
 msgid "Bluetooth output 5"
+msgstr ""
+
+msgctxt "#32036"
+msgid "Bluetooth output 6"
+msgstr ""
+
+msgctxt "#32037"
+msgid "Bluetooth output 7"
+msgstr ""
+
+msgctxt "#32038"
+msgid "Bluetooth output 8"
+msgstr ""
+
+msgctxt "#32039"
+msgid "Bluetooth output 9"
+msgstr ""
+
+msgctxt "#32040"
+msgid "Bluetooth output 10"
 msgstr ""
 
 msgctxt "#32041"
@@ -154,4 +198,8 @@ msgstr ""
 
 msgctxt "#32046"
 msgid "%s disconnected"
+msgstr ""
+
+msgctxt "#32047"
+msgid "Added to favourites"
 msgstr ""

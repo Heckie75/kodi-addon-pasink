@@ -1,17 +1,21 @@
+import json
 import os
+import re
 import sys
 
+import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
 
 from resources.lib.pasink import PASink
 
-__PLUGIN_ID__ = "script.pasink"
-_MAX_SINKS = 5
+_MAX_SINKS = 10
 
-addon = xbmcaddon.Addon(id=__PLUGIN_ID__)
+addon = xbmcaddon.Addon()
 addon_dir = xbmcvfs.translatePath(addon.getAddonInfo('path'))
+
+pasink = None
 
 
 def get_display_name(sink):
@@ -41,7 +45,7 @@ def refresh_settings(alsa_outputs, bluez_sinks):
 
         for i in range(_MAX_SINKS):
 
-            sid = addon.getSetting("%s_sink_%i" % (key, i))
+            sid = addon.getSettingString("%s_sink_%i" % (key, i))
             if sid == sink["sink"]:
                 sname = addon.getSetting("%s_name_%i" % (key, i))
                 if sname != sink["name"]:
@@ -53,10 +57,12 @@ def refresh_settings(alsa_outputs, bluez_sinks):
 
                 return
 
-            elif sid == "" and i not in free_aliases[key]:
+            elif not sid and i not in free_aliases[key]:
                 free_aliases[key].append(i)
 
                 inserts[key].append(sink)
+
+                return
 
     def _update(key):
 
@@ -94,31 +100,35 @@ def refresh_settings(alsa_outputs, bluez_sinks):
     _update(PASink.BLUEZ_SINK)
 
 
-def select():
+def get_icon_file(sink: str, combine=False) -> str:
 
-    def _confirm(sink, name1, name2=None):
+    if combine:
+        icon = "icon_combine"
 
-        if name2:
-            icon = "icon_combine"
+    elif sink.startswith(PASink.BLUEZ_SINK):
+        icon = "icon_bluetooth"
 
-        elif sink.startswith(PASink.BLUEZ_SINK):
-            icon = "icon_bluetooth"
+    elif "hdmi" in sink.lower():
+        icon = "icon_hdmi"
 
-        elif "hdmi" in sink.lower():
-            icon = "icon_hdmi"
+    elif "displayport" in sink.lower():
+        icon = "icon_dp"
 
-        elif "displayport" in sink.lower():
-            icon = "icon_dp"
+    elif "usb" in sink.lower():
+        icon = "icon_usb"
 
-        elif "usb" in sink.lower():
-            icon = "icon_usb"
+    else:
+        icon = "icon_analog"
 
-        else:
-            icon = "icon_analog"
+    return os.path.join(
+        addon_dir, "resources", "assets", icon + ".png")
 
-        icon_file = os.path.join(
-            addon_dir, "resources", "assets", icon + ".png")
 
+def set_sink(sink1: str, name1: str, sink2=None, name2=None) -> None:
+
+    def confirm(sink: str, name1: str, name2=None):
+
+        icon_file = get_icon_file(sink, combine=name2 != None)
         if name2:
             msg = addon.getLocalizedString(32010) % (name1, name2)
         else:
@@ -127,7 +137,7 @@ def select():
         xbmcgui.Dialog().notification(heading=addon.getLocalizedString(32008),
                                       message=msg, icon=icon_file)
 
-    def _error(sink, name1, name2=None):
+    def error(sink, name1, name2=None):
 
         icon_file = os.path.join(
             addon_dir, "resources", "assets", "icon_default.png")
@@ -139,6 +149,16 @@ def select():
 
         xbmcgui.Dialog().notification(heading=addon.getLocalizedString(32041),
                                       message=msg, icon=icon_file)
+
+    success = pasink.set_sink(sink1=sink1, sink2=sink2)
+    if success:
+        confirm(sink1, name1, name2)
+
+    else:
+        error(sink1, name1, name2)
+
+
+def select():
 
     def _get_sink_options(blacklisted_sinks=list()):
 
@@ -172,8 +192,6 @@ def select():
             i += 1
 
         return sinks, names, preselect, disconnect
-
-    pasink = PASink(addon)
 
     # Step 1: ask for sink1
     sinks, names, preselect, disconnect = _get_sink_options()
@@ -209,11 +227,7 @@ def select():
                                               message=addon.getLocalizedString(32004) % name1, customlabel=addon.getLocalizedString(32006))
     # Step 2.1: confirmed
     if action == 1:
-        success = pasink.set_sink(sink1=sink1)
-        if success:
-            _confirm(sink1, name1)
-        else:
-            _error(sink1, name1)
+        set_sink(sink1=sink1, name1=name1)
 
     # Step 2.2: another sink
     elif action == 2:
@@ -234,20 +248,50 @@ def select():
         sink2 = sinks[selected]
         name2 = names[selected]
 
-        success = pasink.set_sink(sink1=sink1, sink2=sink2)
-        if success:
-            _confirm(sink1, name1, name2)
+        set_sink(sink1=sink1, name1=name1, sink2=sink2, name2=name2)
 
-        else:
-            _error(sink1, name1, name2)
+
+def add_to_favourites(type: str, id: int) -> None:
+
+    sink = addon.getSettingString("%s_sink_%i" % (type, id))
+    title = addon.getSettingString("%s_alias_%i" % (type, id))
+    if not title:
+        title = addon.getSettingString("%s_name_%i" % (type, id))
+
+    thumbnail = os.path.join(addon_dir, "icon.png")
+
+    kodi_json = dict()
+    kodi_json["jsonrpc"] = "2.0"
+    kodi_json["id"] = 1
+    kodi_json["method"] = "Favourites.AddFavourite"
+    kodi_json["params"] = {
+        "title": title,
+        "type": "media",
+        "path": "plugin://script.pasink/?sink=%s&name=%s" % (sink, title),
+        "thumbnail": thumbnail
+    }
+    xbmc.executeJSONRPC(json.dumps(kodi_json))
+    xbmcgui.Dialog().notification(heading=addon.getLocalizedString(32001),
+                                  message=addon.getLocalizedString(
+        32047),
+        icon=thumbnail)
 
 
 if __name__ == "__main__":
 
     args = sys.argv
     if len(args) == 2 and args[1] == "discover":
-        pasink = PASink(addon)
+        pasink = PASink()
         refresh_settings(pasink.get_alsa_outputs(), pasink.get_bluez_sinks())
 
+    elif len(args) == 4 and args[1] == "add_fav":
+        add_to_favourites(type=args[2], id=int(args[3]))
+
+    elif len(args) == 4 and args[2].startswith("?sink"):
+        pasink = PASink()
+        m = re.match("^\?sink=(.+)&name=(.+)$", args[2])
+        set_sink(sink1=m.groups()[0], name1=m.groups()[1])
+
     else:
+        pasink = PASink()
         select()

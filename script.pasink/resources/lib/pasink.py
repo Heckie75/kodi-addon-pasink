@@ -2,12 +2,11 @@ import json
 import os
 import subprocess
 
+import xbmcaddon
 import xbmcvfs
 
 
 class PASink():
-
-    _addon = None
 
     _state = None
     _default = None
@@ -16,16 +15,11 @@ class PASink():
     BLUEZ_SINK = "bluez_sink"
     COMBINED_SINK = "combined"
 
-    def __init__(self, addon) -> None:
-        super().__init__()
-        self._addon = addon
-        self.update()
-
-    def update(self):
+    def __init__(self) -> None:
 
         returncode, out, err = self._exec_pasink(["--json"])
         if returncode != 0:
-            return None
+            return
 
         self._state = json.loads(out)
 
@@ -39,8 +33,6 @@ class PASink():
                 ":", "_"))
             _s["alias"] = _s["name"]
             _s["default"] = True if _s["sink"] == self._default["sink"] else False
-
-        return self._state, self._default
 
     def get_alsa_outputs(self):
 
@@ -98,7 +90,8 @@ class PASink():
 
     def _exec_pasink(self, params):
 
-        _addon_dir = xbmcvfs.translatePath(self._addon.getAddonInfo('path'))
+        addon = xbmcaddon.Addon()
+        _addon_dir = xbmcvfs.translatePath(addon.getAddonInfo('path'))
 
         call = [os.sep.join(
             [_addon_dir, "resources", "lib", "pasink"])] + params

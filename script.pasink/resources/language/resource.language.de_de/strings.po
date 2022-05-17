@@ -92,6 +92,10 @@ msgctxt "#32019"
 msgid "Bluetooth outputs"
 msgstr "Bluetooth Geräte"
 
+msgctxt "#32020"
+msgid "Add to favourites"
+msgstr "Zu Favoriten hinzufügen"
+
 msgctxt "#32021"
 msgid "ALSA output 1"
 msgstr "ALSA Gerät 1"
@@ -112,6 +116,26 @@ msgctxt "#32025"
 msgid "ALSA output 5"
 msgstr "ALSA Gerät 5"
 
+msgctxt "#32026"
+msgid "ALSA output 6"
+msgstr "ALSA Gerät 6"
+
+msgctxt "#32027"
+msgid "ALSA output 7"
+msgstr "ALSA Gerät 7"
+
+msgctxt "#32028"
+msgid "ALSA output 8"
+msgstr "ALSA Gerät 8"
+
+msgctxt "#32029"
+msgid "ALSA output 9"
+msgstr "ALSA Gerät 9"
+
+msgctxt "#32030"
+msgid "ALSA output 10"
+msgstr "ALSA Gerät 10"
+
 msgctxt "#32031"
 msgid "Bluetooth output 1"
 msgstr "Bluetooth Gerät 1"
@@ -131,6 +155,26 @@ msgstr "Bluetooth Gerät 4"
 msgctxt "#32035"
 msgid "Bluetooth output 5"
 msgstr "Bluetooth Gerät 5"
+
+msgctxt "#32036"
+msgid "Bluetooth output 6"
+msgstr "Bluetooth Gerät 6"
+
+msgctxt "#32037"
+msgid "Bluetooth output 7"
+msgstr "Bluetooth Gerät 7"
+
+msgctxt "#32038"
+msgid "Bluetooth output 8"
+msgstr "Bluetooth Gerät 8"
+
+msgctxt "#32039"
+msgid "Bluetooth output 9"
+msgstr "Bluetooth Gerät 9"
+
+msgctxt "#32040"
+msgid "Bluetooth output 10"
+msgstr "Bluetooth Gerät 10"
 
 msgctxt "#32041"
 msgid "Audio sink failed"
@@ -155,3 +199,7 @@ msgstr "Trenne Verbindung zu %s"
 msgctxt "#32046"
 msgid "%s disconnected"
 msgstr "Verbindung zu %s getrennt"
+
+msgctxt "#32047"
+msgid "Added to favourites"
+msgstr "Zu Favoriten hinzufügt"

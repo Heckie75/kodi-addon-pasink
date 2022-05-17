@@ -10,31 +10,71 @@
     <setting label="32016" type="text" id="alsa_output_name_0" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="alsa_output_alias_0" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="alsa_output_hide_0" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,0)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32022" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="alsa_output_sink_1" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="alsa_output_name_1" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="alsa_output_alias_1" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="alsa_output_hide_1" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,1)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32023" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="alsa_output_sink_2" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="alsa_output_name_2" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="alsa_output_alias_2" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="alsa_output_hide_2" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,2)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32024" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="alsa_output_sink_3" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="alsa_output_name_3" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="alsa_output_alias_3" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="alsa_output_hide_3" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
-
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,3)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32025" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="alsa_output_sink_4" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="alsa_output_name_4" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="alsa_output_alias_4" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
-    <setting label="32018" type="bool" id="alsa_output_hide_3" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32018" type="bool" id="alsa_output_hide_4" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,4)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32026" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="alsa_output_sink_5" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="alsa_output_name_5" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="alsa_output_alias_5" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="alsa_output_hide_5" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,5)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32027" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="alsa_output_sink_6" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="alsa_output_name_6" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="alsa_output_alias_6" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="alsa_output_hide_6" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,6)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32028" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="alsa_output_sink_7" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="alsa_output_name_7" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="alsa_output_alias_7" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="alsa_output_hide_7" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,7)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32029" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="alsa_output_sink_8" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="alsa_output_name_8" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="alsa_output_alias_8" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="alsa_output_hide_8" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,8)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32030" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="alsa_output_sink_9" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="alsa_output_name_9" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="alsa_output_alias_9" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="alsa_output_hide_9" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,alsa_output,9)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
   </category>
   <category label="32019">
     <setting visible="eq(4,)" label="32012" type="lsep" />
@@ -46,29 +86,69 @@
     <setting label="32016" type="text" id="bluez_sink_name_0" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="bluez_sink_alias_0" enable="!eq(-2,)" visible="!eq(-2,)" default="" />  
     <setting label="32018" type="bool" id="bluez_sink_hide_0" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,0)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32032" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="bluez_sink_sink_1" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="bluez_sink_name_1" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="bluez_sink_alias_1" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="bluez_sink_hide_1" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,1)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32033" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="bluez_sink_sink_2" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="bluez_sink_name_2" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="bluez_sink_alias_2" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="bluez_sink_hide_2" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,2)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32034" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="bluez_sink_sink_3" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="bluez_sink_name_3" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="bluez_sink_alias_3" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="bluez_sink_hide_3" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,3)" enable="!eq(-4,)" visible="!eq(-4,)" />
 
     <setting label="32035" type="lsep" visible="!eq(1,)" />
     <setting label="32015" type="text" id="bluez_sink_sink_4" enable="false" visible="!eq(0,)" default="" />
     <setting label="32016" type="text" id="bluez_sink_name_4" enable="false" visible="!eq(-1,)" default="" />
     <setting label="32017" type="text" id="bluez_sink_alias_4" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
     <setting label="32018" type="bool" id="bluez_sink_hide_4" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,4)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32036" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="bluez_sink_sink_5" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="bluez_sink_name_5" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="bluez_sink_alias_5" enable="!eq(-2,)" visible="!eq(-2,)" default="" />  
+    <setting label="32018" type="bool" id="bluez_sink_hide_5" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,5)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32037" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="bluez_sink_sink_6" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="bluez_sink_name_6" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="bluez_sink_alias_6" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="bluez_sink_hide_6" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,6)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32038" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="bluez_sink_sink_7" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="bluez_sink_name_7" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="bluez_sink_alias_7" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="bluez_sink_hide_7" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,7)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32039" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="bluez_sink_sink_8" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="bluez_sink_name_8" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="bluez_sink_alias_8" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="bluez_sink_hide_8" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,8)" enable="!eq(-4,)" visible="!eq(-4,)" />
+
+    <setting label="32040" type="lsep" visible="!eq(1,)" />
+    <setting label="32015" type="text" id="bluez_sink_sink_9" enable="false" visible="!eq(0,)" default="" />
+    <setting label="32016" type="text" id="bluez_sink_name_9" enable="false" visible="!eq(-1,)" default="" />
+    <setting label="32017" type="text" id="bluez_sink_alias_9" enable="!eq(-2,)" visible="!eq(-2,)" default="" />
+    <setting label="32018" type="bool" id="bluez_sink_hide_9" enable="!eq(-3,)" visible="!eq(-3,)" default="false" />
+    <setting label="32020" type="action" action="RunScript($ID,add_fav,bluez_sink,9)" enable="!eq(-4,)" visible="!eq(-4,)" />
   </category>
 </settings>
