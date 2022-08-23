@@ -61,9 +61,9 @@ After you have installed the addon you must activate the plugin explicitly and m
 3. Select "User addons"
 4. Select "All addons", select "Pulse-Audio Sink Setter" and activate it
 
-## Troublehooting
+## Troubleshooting
 
-In case that the addon doesn't work as expected double-check if the script ```pasink``` which is located in addon's folder is executeable:
+In case that the addon doesn't work as expected double-check if the script ```resources/lib/pasink``` which is located in addon's folder is executeable (see also [issue #5](https://github.com/Heckie75/kodi-addon-pasink/issues/5)):
 
 Example
 ```
