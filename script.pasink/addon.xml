@@ -19,8 +19,8 @@
 		<language>en_GB</language>
 		<platform>linux</platform>
 		<license>MIT</license>
-		<website>https://github.com/Heckie75/kodi-addon-pasink</website>
-		<source>https://github.com/Heckie75/kodi-addon-pasink</source>
+		<website>https://github.com/morrishoresh/kodi-addon-pasink</website>
+		<source>https://github.com/morrishoresh/kodi-addon-pasink</source>
 		<news>
 		v2.2.0
 		- Support PipeWire Pulse
