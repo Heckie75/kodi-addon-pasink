@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.1.0" provider-name="Heckie">
+<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.2.0" provider-name="Heckie">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 	</requires>
@@ -22,9 +22,11 @@
 		<website>https://github.com/Heckie75/kodi-addon-pasink</website>
 		<source>https://github.com/Heckie75/kodi-addon-pasink</source>
 		<news>
+		v2.2.0
+		- Support PipeWire Pulse
 		v2.1.0 (2022-05-17)
 		- Add feature to add sinks to kodi's favourites for quick access
-        - Updated pasink script to latest version
+	        - Updated pasink script to latest version
 
 		v2.0.1 (2020-07-10)
 		- Changed type of addon from audui addon to script / program
