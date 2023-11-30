@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.1.0" provider-name="Heckie">
+<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.1.1" provider-name="Heckie">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 	</requires>
@@ -22,6 +22,9 @@
 		<website>https://github.com/Heckie75/kodi-addon-pasink</website>
 		<source>https://github.com/Heckie75/kodi-addon-pasink</source>
 		<news>
+        v2.1.1 (2023-11-30)
+        - Updated pasink script for compability reasons (Bluez 5.65 and above)
+ 
 		v2.1.0 (2022-05-17)
 		- Add feature to add sinks to kodi's favourites for quick access
         - Updated pasink script to latest version

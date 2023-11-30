@@ -4,6 +4,8 @@ MAX_RETRIES=5
 export LANG=en_US.UTF-8
 export LANGUAGE=en_US
 
+BLUEZ_VERSION=$(bluetoothctl --version | cut -d" " -f2 | awk '{print $0 * 100}')
+
 function usage() {
 
   echo -e "\nPulse-audio sink-setter with bluez and combined-sink support"
@@ -203,6 +205,15 @@ function connect_bluez_by_mac() {
     return
   fi
 
+  if [ $BLUEZ_VERSION -ge 565 ]
+  then
+    bluetoothctl devices Connected | grep $_mac > /dev/null
+    if [ $? == 0 ]
+    then
+      return
+    fi 
+  fi
+
   echo -e -n "Connect:\t$_mac "
   expect <<EOD
     log_user 0
@@ -254,9 +265,30 @@ function get_connected_devices() {
 function make_bluez_sink_name_by_mac() {
 
   _mac=$1
-  echo bluez_sink.$_mac.a2dp_sink | sed "s/:/_/g"
+
+  if [ $BLUEZ_VERSION -ge 565 ]
+  then
+    echo bluez_output.$_mac | sed "s/:/_/g"
+  else
+    echo bluez_sink.$_mac.a2dp_sink | sed "s/:/_/g"
+  fi
 
 }
+
+function bluez_name_to_mac () {
+
+  name=$1
+
+  echo $name | grep ^bluez_output >/dev/null
+  if [ $? != 0 ]
+  then
+    echo $name
+    return
+  fi
+
+  echo $name | awk '{print substr($1, 14, 17)}' | sed "s/_/:/g"
+}
+
 
 function lookup_alsa_device() {
 
@@ -314,7 +346,7 @@ function list_sinks() {
 
 function get_default_sink() {
 
-  _sink=`pacmd stat | awk -F": " '/^Default sink name: /{print $2}'`
+  _sink=`pactl info | awk -F": " '/^Default Sink: /{print $2}'`
   list_sinks | egrep "$_sink"
 
 }
@@ -326,11 +358,11 @@ function set_default_sink_by_name() {
 
   echo -n -e "\nDefault sink:\t$sink_name "
   pactl set-default-sink $sink
-  sink_src=`pacmd list-sink-inputs | grep -B1 "driver: <protocol-native.c>" | grep "index" | egrep -o '[0-9]+' | tail -n1`
+  sink_src=`pactl list sink-inputs | grep -B1 "driver: <protocol-native.c>" | grep "index" | egrep -o '[0-9]+' | tail -n1`
 
   if [ "$sink_src" != "" ]
   then
-    pacmd move-sink-input $sink_src $sink
+    pactl move-sink-input $sink_src $sink
   fi
   echo -e "\t[OK]"
 
@@ -366,7 +398,7 @@ function load_combined_sink() {
   echo -e "\nCreate combined sink of:"
   echo -e "\t$sink1_name"
   echo -e "\t$sink2_name"
-  pacmd load-module module-combine-sink sink_name=combined slaves=$combined
+  pactl load-module module-combine-sink sink_name=combined slaves=$combined
 
 }
 
@@ -375,7 +407,7 @@ function unload_combined_sink() {
   pactl list modules short | grep "module-combine-sink" > /dev/null
   if [ $? == 0 ]
   then
-    pacmd unload-module module-combine-sink
+    pactl unload-module module-combine-sink
   fi
 
 }
@@ -446,13 +478,13 @@ while [ "$1" != "" ]; do
 done
 
 # Step 2: look which bluez device is requested
-
 req_bluez_mac=""
 for req_device in $req1 $req2
 do
-  req_bluez_controller=$(get_bluez_controller $req_device)
-  req_bluez_mac=$(get_bluez_mac $req_device)
-  req_bluez_name=$(get_bluez_name $req_device)
+  _req_device=$(bluez_name_to_mac $req_device)
+  req_bluez_controller=$(get_bluez_controller $_req_device)
+  req_bluez_mac=$(get_bluez_mac $_req_device)
+  req_bluez_name=$(get_bluez_name $_req_device)
   req_bluez_sink=$(make_bluez_sink_name_by_mac $req_bluez_mac)
 
   if [ "$req_bluez_mac" != "" ]
@@ -486,6 +518,7 @@ then
   while [ $retry2 -lt $MAX_RETRIES ]
   do
     connect_bluez_by_mac $req_bluez_controller $req_bluez_mac
+    echo $req_bluez_sink
     wait_for_sink_available $req_bluez_sink
     if [ $? == 0 ]
     then
@@ -493,6 +526,8 @@ then
     fi
     retry2=$(($retry2+1))
   done
+
+  req_bluez_sink=$(pactl list sinks short | grep "$req_bluez_sink" | awk '{print $2}')
 
   if [ $retry2 -eq $MAX_RETRIES ]
   then
@@ -517,8 +552,6 @@ then
   # 6.3. just alsa
   set_default_sink_by_name $req_alsa_device
 fi
-
-echo
 
 if [ "$vol_alsa" != "" ]
 then
