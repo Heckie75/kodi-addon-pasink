@@ -6,6 +6,9 @@ I have written this KODI plugin in order to make it as easy as possible to switc
 
 This plugin is based on my project [pasink](https://github.com/Heckie75/pasink) 
 
+## Important note
+This addon doesn't work anymore on systems using pipewire like Ubuntu 23.04 or later. I have used this script on Ubuntu 22.04. At this moment there are no plans to update this script!
+In addition this addon doesn't on Kodi installations that are based on Flatpak or Snap. 
 
 ## Requirements / pre-conditions
 
@@ -31,7 +34,6 @@ Pulse-Audio is the audio server. It should come with any state-of-the-art linux 
 
 a) `pacmd`
 
-b) `pactl`
 
 You have maybe to check and adjust some configuration. Please make sure that the following line is in the file `/etc/pulse/default.pa`:
 
