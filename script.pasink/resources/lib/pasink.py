@@ -15,6 +15,8 @@ class PASink():
     BLUEZ_SINK = "bluez_sink"
     COMBINED_SINK = "combined"
 
+    SWITCH_DISCONNECT = "-d"
+
     def __init__(self) -> None:
 
         returncode, out, err = self._exec_pasink(["--json"])
@@ -46,11 +48,11 @@ class PASink():
 
         return self._default
 
-    def is_bluez_sink(self, sink):
+    def is_bluez_sink(self, sink: str) -> bool:
 
         return sink and sink.startswith(PASink.BLUEZ_SINK)
 
-    def is_combined_sink(self, sink):
+    def is_combined_sink(self, sink: str) -> bool:
 
         return PASink.COMBINED_SINK == sink
 
@@ -62,9 +64,8 @@ class PASink():
                 return None
 
             elif self.is_bluez_sink(sink):
-                _s = next(
-                    filter(lambda _s: _s["sink"] == sink, self._state["bluez"]))
-                return _s["mac"] if _s else None
+                _sinks = [_s for _s in self._state["bluez"] if _s["sink"] == sink]
+                return _sinks[0]["mac"] if _sinks else None
 
             else:
                 return sink
@@ -76,16 +77,16 @@ class PASink():
             return
 
         elif not sink2 or sink1 == sink2:
-            returncode, out, err = self._exec_pasink([sink1])
+            returncode, out, err = self._exec_pasink([PASink.SWITCH_DISCONNECT, sink1])
 
         else:
-            returncode, out, err = self._exec_pasink([sink1, sink2])
+            returncode, out, err = self._exec_pasink([PASink.SWITCH_DISCONNECT, sink1, sink2])
 
         return returncode == 0
 
     def disconnect(self):
 
-        returncode, out, err = self._exec_pasink(["-d"])
+        returncode, out, err = self._exec_pasink([PASink.SWITCH_DISCONNECT])
         return returncode == 0
 
     def _exec_pasink(self, params):
