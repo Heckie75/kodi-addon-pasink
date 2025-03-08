@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.2.0" provider-name="Heckie">
+<addon id="script.pasink" name="Pulse-Audio Sink Setter" version="2.2.1" provider-name="Heckie">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0" />
 	</requires>
@@ -22,6 +22,9 @@
 		<website>https://github.com/Heckie75/kodi-addon-pasink</website>
 		<source>https://github.com/Heckie75/kodi-addon-pasink</source>
 		<news>
+        v2.2.1 (2025-03-08)
+        - Fix: Disconnect bluethooth sinks before setting new sink (made trouble prob. because bluethooth v5.x allows multiple audio sinks)
+
         v2.2.0 (2024-09-14)
         - Updated pasink script for compability reasons (removed pactl dependency)
 
